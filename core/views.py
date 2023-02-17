@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from django.urls import reverse
 import speech_recognition as sr 
 import moviepy.editor as mp
 from .helpers import handle_uploaded_file
 import os
 from pathlib import Path
+from django.http import HttpResponseRedirect
+
 # Create your views here.
 def home(request):
     projrect_dir = os.getcwd()
@@ -32,9 +35,10 @@ def home(request):
                     
                 os.chdir(projrect_dir)
                 return render(request,'home.html', context={'download':True,'token':token, 'error':False})
+
             else:
-               return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload only mp4, mov, m4a.'})
-                
+                return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload only mp4, mov, m4a.'})
+                    
         except:
             print('execept')
             os.chdir(projrect_dir)
