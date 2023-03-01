@@ -14,35 +14,34 @@ def home(request):
     token = str(request.COOKIES.get('csrftoken')).lower()
     
     if request.method == 'POST':
-
-        # try:
-        uploaded_video = request.FILES.get('video')
-        if not uploaded_video:
-            return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload a video file.'})
-        if  Path(uploaded_video.name).suffix == '.mp4' or  Path(uploaded_video.name).suffix == '.mov' or  Path(uploaded_video.name).suffix == '.m4a':
-            handle_uploaded_file(uploaded_video,token)
-            video = mp.VideoFileClip(f'{token}.mp4')
-            video.audio.write_audiofile(f'{token}.wav')
-            r = sr.Recognizer()
-            audio = sr.AudioFile(f'{token}.wav')
-            with audio as source:
-                r.adjust_for_ambient_noise(source)  
-                audio_file = r.record(source)
-            text = r.recognize_google(audio_file,language=request.POST.get('lang'))
-            
-            with open(f'{token}.txt',mode ='w',encoding="utf-8") as file: 
-                file.write(text) 
+        try:
+            uploaded_video = request.FILES.get('video')
+            if not uploaded_video:
+                return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload a video file.'})
+            if  Path(uploaded_video.name).suffix == '.mp4' or  Path(uploaded_video.name).suffix == '.mov' or  Path(uploaded_video.name).suffix == '.m4a':
+                handle_uploaded_file(uploaded_video,token)
+                video = mp.VideoFileClip(f'{token}.mp4')
+                video.audio.write_audiofile(f'{token}.wav')
+                r = sr.Recognizer()
+                audio = sr.AudioFile(f'{token}.wav')
+                with audio as source:
+                    r.adjust_for_ambient_noise(source)  
+                    audio_file = r.record(source)
+                text = r.recognize_google(audio_file,language=request.POST.get('lang'))
                 
-            os.chdir(projrect_dir)
-            return render(request,'home.html', context={'download':True,'token':token, 'error':False})
-
-        else:
-            return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload only mp4, mov, m4a.'})
+                with open(f'{token}.txt',mode ='w',encoding="utf-8") as file: 
+                    file.write(text) 
                     
-        # except:
-        #     print('execept')
-        #     os.chdir(projrect_dir)
-        #     return render(request,'home.html',context={'download':False,'error':True,'message':'Somthing goes wrong. Try again.'})
+                os.chdir(projrect_dir)
+                return render(request,'home.html', context={'download':True,'token':token, 'error':False})
+
+            else:
+                return render(request,'home.html',context={'download':False,'error':True,'message':'Please upload only mp4, mov, m4a.'})
+                        
+        except:
+            print('execept')
+            os.chdir(projrect_dir)
+            return render(request,'home.html',context={'download':False,'error':True,'message':'Somthing goes wrong. Try again.'})
         
     return render(request,'home.html',context={'download':False,'error':False})
     
