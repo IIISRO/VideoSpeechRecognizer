@@ -3,6 +3,16 @@
 
   services:
     
+    db:
+      image:  postgres
+      restart: always
+      ports:
+        - "5432:5432"
+      env_file: .env 
+
+      volumes:
+        - ./database:/var/lib/postgresql/data
+        
     web:
       container_name: videoauditextext
       build: .
@@ -13,6 +23,7 @@
       ports:
         - 8000:8000
       depends_on:
+        - 'db'
         - 'redis'
       env_file: .env 
 
@@ -34,6 +45,7 @@
         context: .
         dockerfile: CeleryDockerfile
       depends_on: 
+        - "db"
         - "redis"
       env_file: .env
 
@@ -43,3 +55,8 @@
       ports:
         - "6379:6379"
       
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080

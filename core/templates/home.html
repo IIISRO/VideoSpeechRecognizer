@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,6 +37,7 @@
       <h1>Speech Recognizer</h1>
     </center>
     <hr>
+
     <form action='' method="post" enctype='multipart/form-data'>
         {% csrf_token %}
 
@@ -49,14 +51,23 @@
                 <div class="row">
                     <h5 class="col-6 card-title">Upload Video</h5>
                     <h5 class="col-6 card-title">Select Speech Language</h5>
-                    <input class="col-6" name="video" type="file">
+                    <div class="col-6">
+
+                      <select name="uploadfrom" class="col-2"  onchange="selectUpload()" id="uploadfrom">
+                        <option value="device">On device</option>
+                        <option value="youtube">On Youtube</option>
+                      </select>
+                      <span class="col-6" id="inputdiv">
+                        <input class="col-6" name="video" type="file">
+                      </span>
+                    </div>
                     <select name="lang" class="col-6" id="">
                         <option value="az-AZ">Azerbaijan</option>
                         <option value="en-EN">English</option>
                     </select>
                 </div>
                 <div style="display: flex; justify-content: space-around;">
-                </div>
+              </div>
               <button type="submit" id="submit" class="btn btn-primary mt-3" >Convert</button>
             </div>
           </div>
@@ -67,7 +78,7 @@
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Download Audio</h5>
-                  <a href="media/{{token}}.wav" download="" class="btn btn-primary">Download</a>
+                  <a href="media/{{file.audio.name}}" download="" class="btn btn-primary">Download</a>
                 </div>
               </div>
             </div>
@@ -76,7 +87,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Download Text</h5>
                   
-                  <a href="media/{{token}}.txt" download="" class="btn btn-primary">Download</a>
+                  <a href="media/{{file.text.name}}" download="" class="btn btn-primary">Download</a>
                 </div>
               </div>
             </div>
@@ -88,6 +99,16 @@
 </div>
 
 <script>
+  const inputDiv = document.getElementById('inputdiv')
+  const uploadFrom = document.getElementById("uploadfrom")
+  function selectUpload(){
+    if(uploadFrom.value === 'youtube'){
+      inputDiv.innerHTML = '<input placeholder="Paste link adress"  class="col-6" type="text" name="video" id="">'
+    }else if(uploadFrom.value === 'device'){
+      inputDiv.innerHTML = '<input class="col-6" name="video" type="file">'
+    }
+  }
+  
   const wait = (delay = 0) =>
   new Promise(resolve => setTimeout(resolve, delay));
 
