@@ -78,7 +78,7 @@
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Download Audio</h5>
-                  <a href="media/{{file.audio.name}}" download="" class="btn btn-primary">Download</a>
+                  <a href="download?filepath={{token}}.wav&filename={{filename}}(audio).wav" class="btn btn-primary">Download</a>
                 </div>
               </div>
             </div>
@@ -87,7 +87,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Download Text</h5>
                   
-                  <a href="media/{{file.text.name}}" download="" class="btn btn-primary">Download</a>
+                  <a href="download?filepath={{token}}.txt&filename={{filename}}(text).txt" class="btn btn-primary">Download</a>
                 </div>
               </div>
             </div>
