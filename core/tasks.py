@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 import os
+
 @shared_task
 def clean_media():
     folder = os.listdir(settings.MEDIA_ROOT)

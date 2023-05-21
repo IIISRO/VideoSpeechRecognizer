@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from unidecode import unidecode
 
 # from django.urls import reverse
 # from .helpers import handle_uploaded_file
@@ -97,15 +98,20 @@ def home(request):
 
 
 
+
 def DownloadMedia(request):
     file_name = request.GET.get('filename')
-    file_path = os.path.join(settings.MEDIA_ROOT, request.GET.get('filepath'))
-    with open(file_path, 'rb') as f:
-        file_content = f.read()
-    response = HttpResponse(file_content, content_type='application/octet-stream')
-    response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(file_name)
-    os.remove(file_path)
-    return response
+    transliterated_file_name = unidecode(file_name)
+    if os.path.exists(f'media/{request.GET.get("filepath")}'):
+        file_path = os.path.join(settings.MEDIA_ROOT, request.GET.get('filepath'))
+        with open(file_path, 'rb') as f:
+            file_content = f.read()
+        response = HttpResponse(file_content, content_type='application/octet-stream')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(transliterated_file_name)
+        os.remove(file_path)
+        return response
+    else:
+        return HttpResponse('This file downloaded')
 
 
 
@@ -121,6 +127,3 @@ def clean_media(request):
             print('Cleaning media files...')
             os.remove(file_path)
     return HttpResponse('Trash media file cleaned!')
-        
-    
-    
